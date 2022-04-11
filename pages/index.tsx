@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
-import type { NextPage } from "next";
-import { Layout } from "../src/Layout";
-import { CardWithHeader } from "../src/components/CardWithHeader/CardWithHeader";
+// import { Layout } from "../src/Layout";
+// import { CardWithHeader } from "../src/components/CardWithHeader/CardWithHeader";
 import { Grid, Box } from "@mui/material";
 import {
   AppInfoResponse,
   getAppInfoAsync,
   getNetworkInfoAsync,
 } from "src/api/zrxTrackerApi";
-import { LineCard } from "src/components/LineCard/LineCard";
-import { TopAppsCard } from "src/components/TopAppsCard/TopAppsCard";
+// import { LineCard } from "src/components/LineCard/LineCard";
+// import { TopAppsCard } from "src/components/TopAppsCard/TopAppsCard";
 
 function abbreviateNumber(value: number): string {
   const suffixes = ["", "k", "m", "b", "t"];
@@ -61,7 +60,7 @@ export async function getServerSideProps() {
   };
 }
 
-const Home: NextPage = ({ data }: { data: Data }) => {
+const Home = ({ data }: { data: Data }) => {
   const { volume, trades, traders, avgTradeSize } = data;
 
   const [data1, setdata1] = useState<{ loading: boolean; data: string | null }>(
@@ -102,9 +101,9 @@ const Home: NextPage = ({ data }: { data: Data }) => {
   }, []);
 
   return (
-    <Layout>
-      <Box>
-        <Grid container columnSpacing={1} columns={12}>
+    // <Layout>
+    <Box>
+      {/* <Grid container columnSpacing={1} columns={12}>
           <Grid item xs={3}>
             <CardWithHeader header="Volume (30 D)" content={volume} />
           </Grid>
@@ -136,8 +135,8 @@ const Home: NextPage = ({ data }: { data: Data }) => {
               loading={data2.loading}
             />
           </Grid>
-        </Grid>
-        <Grid container columnSpacing={2} columns={12} sx={{ mt: 4 }}>
+        </Grid> */}
+      {/* <Grid container columnSpacing={2} columns={12} sx={{ mt: 4 }}>
           <Grid item xs={7}>
             <LineCard
               data={chartData.data}
@@ -152,9 +151,9 @@ const Home: NextPage = ({ data }: { data: Data }) => {
               loading={performers.loading}
             />
           </Grid>
-        </Grid>
-      </Box>
-    </Layout>
+        </Grid> */}
+    </Box>
+    // </Layout>
   );
 };
 

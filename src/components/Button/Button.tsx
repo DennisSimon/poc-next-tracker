@@ -1,8 +1,8 @@
 import React from "react";
-import { Button as MuiButton, ButtonProps, SxProps } from "@mui/material";
+import { Button as MuiButton, ButtonProps } from "@mui/material";
 import { merge } from "lodash";
 
-const containedSx: SxProps = {
+const containedSx = {
   backgroundColor: "background.button",
   borderColor: "background.button",
   color: "text.link",
@@ -13,7 +13,7 @@ const containedSx: SxProps = {
   },
 };
 
-const outlinedSx: SxProps = {
+const outlinedSx = {
   borderColor: "background.button",
   color: "text.link",
   textTransform: "none",
@@ -22,7 +22,7 @@ const outlinedSx: SxProps = {
   },
 };
 
-const textSx: SxProps = {
+const textSx = {
   color: "text.secondary",
   textTransform: "none",
 };

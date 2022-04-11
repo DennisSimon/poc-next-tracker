@@ -2,7 +2,7 @@ import React from "react";
 import { Card as MuiCard, CardProps } from "@mui/material";
 import { merge } from "lodash";
 
-const defaultCardSx: SxProps = {
+const defaultCardSx = {
   backgroundColor: "background.card",
   borderRadius: 0,
 } as const;
