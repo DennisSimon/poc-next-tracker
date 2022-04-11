@@ -1,17 +1,13 @@
-import React, { useCallback } from "react";
-import { Card, CardContent, CardWithHeader } from "@Components";
+import * as React from "react";
+import { CardWithHeader } from "@Components";
 import type { CardWithHeaderProps } from "../CardWithHeader/CardWithHeader";
 import {
   VictoryArea,
   VictoryAxis,
   VictoryBrushContainer,
   VictoryChart,
-  VictoryContainer,
-  VictoryLine,
   VictoryZoomContainer,
 } from "victory";
-import { useState } from "react";
-import { theme } from "@Styles/victoryTheme";
 
 type Data = {
   x: Date;
@@ -40,17 +36,20 @@ function abbreviateNumber(value: number): string {
 }
 
 const LineChart = ({ data }: { data: Data[] }) => {
-  const [zoomDomain, setZoomDomain] = useState<{
+  const [zoomDomain, setZoomDomain] = React.useState<{
     x?: DomainTuple;
     y?: DomainTuple;
   }>();
-  const [selectedDomain, setSelectedDomain] = useState<{
+  const [selectedDomain, setSelectedDomain] = React.useState<{
     x?: DomainTuple;
     y?: DomainTuple;
   }>();
 
-  const [boundingRect, setBoundingRect] = useState({ width: 0, height: 0 });
-  const graphRef = useCallback((node: any) => {
+  const [boundingRect, setBoundingRect] = React.useState({
+    width: 0,
+    height: 0,
+  });
+  const graphRef = React.useCallback((node: any) => {
     if (node !== null) {
       setBoundingRect(node.getBoundingClientRect());
     }
@@ -59,7 +58,6 @@ const LineChart = ({ data }: { data: Data[] }) => {
   return (
     <div style={{ width: "100%" }} ref={graphRef}>
       <VictoryChart
-        theme={theme}
         height={300}
         width={boundingRect.width}
         scale={{ x: "time" }}
@@ -88,7 +86,6 @@ const LineChart = ({ data }: { data: Data[] }) => {
       <VictoryChart
         height={90}
         width={boundingRect.width}
-        theme={theme}
         scale={{ x: "time" }}
         padding={{ top: 0, left: 50, right: 50, bottom: 30 }}
         prependDefaultAxes={false}

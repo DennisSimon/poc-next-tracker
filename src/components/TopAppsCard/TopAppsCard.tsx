@@ -1,8 +1,6 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { Card, CardContent, CardWithHeader } from "@Components";
 import type { CardWithHeaderProps } from "../CardWithHeader/CardWithHeader";
-import { useState } from "react";
-import { theme } from "@Styles/victoryTheme";
 import { AppInfoResponse } from "src/api/zrxTrackerApi";
 import {
   List,

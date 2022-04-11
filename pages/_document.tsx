@@ -1,8 +1,7 @@
 import * as React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import createEmotionServer from "@emotion/server/create-instance";
-import { theme } from "../src/styles/theme";
-import createEmotionCache from "../src/createEmotionCache";
+import createEmotionCache from "../utility/createEmotionCache";
 
 export default class MyDocument extends Document {
   render() {
@@ -10,7 +9,6 @@ export default class MyDocument extends Document {
       <Html lang="en">
         <Head>
           {/* PWA primary color */}
-          <meta name="theme-color" content={theme.palette.primary.main} />
           <link rel="shortcut icon" href="/static/favicon.ico" />
           <link
             rel="stylesheet"
@@ -83,6 +81,9 @@ MyDocument.getInitialProps = async (ctx) => {
 
   return {
     ...initialProps,
-    emotionStyleTags,
+    styles: [
+      ...React.Children.toArray(initialProps.styles),
+      ...emotionStyleTags,
+    ],
   };
 };
