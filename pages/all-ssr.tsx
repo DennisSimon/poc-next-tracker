@@ -6,6 +6,7 @@ import {
   AppInfoResponse,
   getAppInfoAsync,
   getNetworkInfoAsync,
+  NetworkInfo,
 } from "src/api/zrxTrackerApi";
 import { LineCard } from "src/components/LineCard/LineCard";
 import { TopAppsCard } from "src/components/TopAppsCard/TopAppsCard";
@@ -30,19 +31,32 @@ type Data = {
   trades: string;
   traders: string;
   avgTradeSize: string;
+  chartData: { x: Date; y: number }[];
+  performers: AppInfoResponse;
+  dummyData1: string;
+  dummyData2: string;
 };
 
 export async function getServerSideProps() {
   const requests = [
-    fetch("https://api.0xtracker.com/stats/network?period=month"),
-    fetch("https://api.0xtracker.com/stats/trader?period=month"),
+    fetch("https://api.0xtracker.com/stats/network?period=month").then((res) =>
+      res.json()
+    ),
+    fetch("https://api.0xtracker.com/stats/trader?period=month").then((res) =>
+      res.json()
+    ),
+    getNetworkInfoAsync("hour", "day"),
+    getAppInfoAsync(5, "day"),
   ];
 
-  const results = await Promise.all(requests);
-
-  const [networkData, traderData] = await Promise.all(
-    results.map((res) => res.json())
+  const [networkData, traderData, rawChartData, performers] = await Promise.all(
+    requests
   );
+
+  const chartData = rawChartData.map((item: NetworkInfo) => ({
+    x: new Date(item.date),
+    y: item.tradeVolume,
+  }));
 
   const out: Data = {
     volume: `$${abbreviateNumber(networkData.tradeVolume)}`,
@@ -51,6 +65,10 @@ export async function getServerSideProps() {
     avgTradeSize: `$${abbreviateNumber(
       networkData.tradeVolume / networkData.tradeCount
     )}`,
+    performers,
+    chartData,
+    dummyData1: "$10.9b",
+    dummyData2: "5.42k",
   };
 
   return {
@@ -61,44 +79,16 @@ export async function getServerSideProps() {
 }
 
 const Home = ({ data }: { data: Data }) => {
-  const { volume, trades, traders, avgTradeSize } = data;
-
-  const [data1, setdata1] = useState<{ loading: boolean; data: string | null }>(
-    { loading: true, data: null }
-  );
-  const [data2, setdata2] = useState<{ loading: boolean; data: string | null }>(
-    { loading: true, data: null }
-  );
-
-  const [chartData, setChartData] = useState<{
-    loading: boolean;
-    data: { x: Date; y: number }[] | null;
-  }>({ loading: true, data: null });
-  const [performers, setPerformers] = useState<{
-    loading: boolean;
-    data: AppInfoResponse | null;
-  }>({ loading: true, data: null });
-
-  useEffect(() => {
-    const d1 = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setdata1({ loading: false, data: "$10.9b" });
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setdata2({ loading: false, data: "5.42k" });
-      const rawChartData = await getNetworkInfoAsync("hour", "day");
-      const data = rawChartData.map((item) => ({
-        x: new Date(item.date),
-        y: item.tradeVolume,
-      }));
-      setChartData({ loading: false, data });
-
-      const rawPerformersData = await getAppInfoAsync(5, "day");
-
-      setPerformers({ loading: false, data: rawPerformersData });
-    };
-
-    d1();
-  }, []);
+  const {
+    volume,
+    trades,
+    traders,
+    avgTradeSize,
+    performers,
+    chartData,
+    dummyData1,
+    dummyData2,
+  } = data;
 
   return (
     <Layout>
@@ -122,33 +112,20 @@ const Home = ({ data }: { data: Data }) => {
         </Grid>
         <Grid container columnSpacing={2} columns={2} sx={{ mt: 4 }}>
           <Grid item xs={1}>
-            <CardWithHeader
-              header="Test data"
-              content={data1.data}
-              loading={data1.loading}
-            />
+            <CardWithHeader header="Test data" content={dummyData1} />
           </Grid>
           <Grid item xs={1}>
-            <CardWithHeader
-              header="Test data"
-              content={data2.data}
-              loading={data2.loading}
-            />
+            <CardWithHeader header="Test data" content={dummyData2} />
           </Grid>
         </Grid>
         <Grid container columnSpacing={2} columns={12} sx={{ mt: 4 }}>
           <Grid item xs={7}>
-            <LineCard
-              data={chartData.data}
-              loading={chartData.loading}
-              header="Trading Metric (24 H)"
-            />
+            <LineCard data={chartData} header="Trading Metric (24 H)" />
           </Grid>
           <Grid item xs={5}>
             <TopAppsCard
               header="Top Performing Apps (24 H)"
-              data={performers.data}
-              loading={performers.loading}
+              data={performers}
             />
           </Grid>
         </Grid>
